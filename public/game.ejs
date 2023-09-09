@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html>
+<head>
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+<link rel="manifest" href="/site.webmanifest">
+<meta name="msapplication-TileColor" content="#2b5797">
+<meta name="theme-color" content="#ffffff">
+    <title>tlochsta media</title>
+  <style>
+        body, html {
+      height: 100%;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: #333!important;
+      color: white;
+    }
+    .iframe-container {
+      position: relative;
+      width: 80vw;
+      height: 45vw; /* 16:9 aspect ratio */
+      max-height: 70vh;
+      overflow: hidden;
+      border-radius: 15px;
+      background-color: #1a1a1a;
+            filter: drop-shadow(5px 5px 10px #000);
+    }
+    .iframe-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      border-radius: 15px;
+    }
+    .text-under-iframe {
+      position: relative;
+      width: 80vw;
+      max-height: 30vh;
+      overflow: hidden;
+      display: flex;
+      justify-content: flex-start;
+      align-items: flex-end;
+      padding: 10px;
+    }
+        .report-button {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 999; /* Ensure the button is above the iframe */
+    }
+            .corner-logo {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      z-index: 999; /* Ensure the button is above the iframe */
+                  max-width: 100%;
+    transition: transform 0.5s ease-in-out;
+    }
+    .corner-logo:hover {
+    transform: rotate(360deg);
+}
+        </style>
+  <style>
+    /* Your existing styles */
+ .gif-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: rgba(0, 0, 0, 0.8); /* Adjust the overlay background color */
+      z-index: 1000; /* Ensure it's above the iframe */
+      opacity: 1; /* Initial opacity */
+      transition: opacity 1s; /* Apply a smooth transition to opacity changes */
+    }
+
+    .gif-overlay img {
+      width: 100%;
+      height: 100%;
+    }
+  </style>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" crossorigin="anonymous">
+</head>
+<body style="flex-direction: column">
+   <!-- Loader -->
+<style>
+  body {
+    margin: 0;
+    padding: 0;
+}
+
+#loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    display: none;
+}
+
+.loader {
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+</style>
+       <div id="loading-overlay">
+        <div class="loader"></div>
+    </div>
+   <script>
+     window.onload = function() {
+    var overlay = document.getElementById('loading-overlay');
+    overlay.style.display = 'none';
+}
+
+window.addEventListener('beforeunload', function() {
+    var overlay = document.getElementById('loading-overlay');
+    overlay.style.display = 'flex';
+});
+
+   </script>
+   <!-- Loader End -->
+    <button class="btn btn-danger report-button" data-bs-toggle="modal" data-bs-target="#report" data-bs-placement="left" title="Report">
+    <i class="fa-solid fa-flag"></i>
+  </button>
+
+      <img id="logo-corner" class="corner-logo" src="/logo.png" onclick="window.location = '/';" width="40" height="40" style="cursor: pointer" data-bs-placement="right" />
+  <div class="position-fixed bottom-0 start-0 mb-3 me-3" style="padding: 20px;">
+    <a href="#" style="filter: drop-shadow(1px 1px 5px #5271FF);"
+title="This domain is protected by <a href='https://reonized.org'>Reonized Security</a>" data-toggle="popover" data-bs-trigger="hover focus"><img src="/img/reonized.png" style="max-width: 35px;"/></a>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script>
+$(document).ready(function(){
+  $('[data-toggle="popover"]').popover({html:true});   
+});
+</script>
+</div>
+  <div class="iframe-container">
+      <div class="gif-overlay" id="gifOverlay">
+      <img src="/intro.gif" alt="Branding">
+    </div>
+<iframe src="<%= gd %>" id="iframe"></iframe>
+    <button id="fullscreenButton">go fullscreen</button>
+</div>
+  <div style="color: white;align-self: flex-start; padding: 5px;">
+  <em>© 2023 tlochsta.dev • <a href="https://github.com/TlochstaDev" style="color:white;"><i class="fa-brands fa-github"></i></a> <a href="https://tiktok.com/@tlochsta" style="color:white;"><i class="fa-brands fa-tiktok"></i></a> <a style="color:white;" href="https://youtube.com/c/tlochsta"><i class="fa-brands fa-youtube"></i></a></em></div>
+      <div class="modal fade" id="report" tabindex="-1" aria-labelledby="report" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="report"><i class="fa-solid fa-flag"></i> Report</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form onsubmit="sendData(event)">
+            <div class="mb-3">
+                  <label for="reportType" class="form-label">Report Type</label>
+          <select class="form-select" id="reportType" aria-label="Default select example">
+  <option selected>Select an option</option>
+  <option value="1">Report in-game content</option>
+  <option value="2">Report an issue with the game</option>
+  <option value="3">Other</option>
+</select>
+            </div>
+  <div class="mb-3">
+    <label for="gameName" class="form-label">Game Name</label>
+    <input type="text" class="form-control" id="gameName">
+  </div>
+  <div class="mb-3">
+    <label for="error" class="form-label">Please explain what is happening</label>
+    <textarea class="form-control" id="error" rows="3"></textarea>
+  </div>
+  <div class="mb-3 form-check">
+    <input type="checkbox" class="form-check-input" id="legal">
+    <label class="form-check-label" for="legal">I agree to the terms and conditions.</label>
+  </div>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <button type="submit" data-bs-dismiss="modal" class="btn btn-danger"><i class="fa-solid fa-paper-plane"></i> Send Report</button>
+      </form>
+      </div>
+
+    </div>
+  </div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+          <script>
+    const gifOverlay = document.getElementById('gifOverlay');
+    const gifElement = gifOverlay.querySelector('img');
+
+    // Set a timeout to initiate the fade-out animation after a delay
+    setTimeout(() => {
+      gifOverlay.style.opacity = '0'; // Start the fade-out animation
+    }, 4000); // Adjust the delay duration (in milliseconds) to match your GIF duration
+
+    // Listen for the transitionend event to remove the overlay after the fade-out animation
+    gifOverlay.addEventListener('transitionend', () => {
+      // Animation has ended, hide the overlay
+      gifOverlay.style.display = 'none';
+    });
+
+
+    // Rest of your existing script
+    // ...
+
+            window.onload = (event) => {
+                setTimeout(function() {
+              var url = window.location.hostname
+              var segments = url.split("/");  // Split the URL by slashes
+var desiredSegment = segments[segments.length - 2];  // Get the second-to
+              console.log(desiredSegment)
+  document.getElementById("gameName").value = desiredSegment;
+        document.getElementById("gameName").setAttribute("disabled", true)        }, 3000);  // 3000 milliseconds = 3 seconds
+};
+  </script>
+        
+          <script>
+ // script.js
+const iframe = document.getElementById("iframe");
+const fullscreenButton = document.getElementById("fullscreenButton");
+let isFullscreen = false;
+
+fullscreenButton.addEventListener("click", () => {
+  if (!isFullscreen) {
+    // Zoom the iframe content to 100% size before entering fullscreen
+    iframe.contentDocument.body.style.transform = "scale(1)";
+    
+    if (iframe.requestFullscreen) {
+      iframe.requestFullscreen();
+    } else if (iframe.mozRequestFullScreen) { /* Firefox */
+      iframe.mozRequestFullScreen();
+    } else if (iframe.webkitRequestFullscreen) { /* Chrome, Safari and Opera */
+      iframe.webkitRequestFullscreen();
+    } else if (iframe.msRequestFullscreen) { /* IE/Edge */
+      iframe.msRequestFullscreen();
+    }
+    
+    isFullscreen = true;
+  } else {
+    // Reset the iframe content's zoom and exit fullscreen
+    iframe.contentDocument.body.style.transform = "none";
+    
+    if (document.exitFullscreen) {
+      document.exitFullscreen();
+    } else if (document.mozCancelFullScreen) { /* Firefox */
+      document.mozCancelFullScreen();
+    } else if (document.webkitExitFullscreen) { /* Chrome, Safari and Opera */
+      document.webkitExitFullscreen();
+    } else if (document.msExitFullscreen) { /* IE/Edge */
+      document.msExitFullscreen();
+    }
+    
+    isFullscreen = false;
+  }
+});
+
+            
+      async function sendData(ev) {
+        ev.preventDefault();
+
+        const reportType = document
+          .getElementById('reportType').value;
+        const gameName = document
+          .getElementById('gameName').value;
+               const error = document
+          .getElementById('error').value;
+
+        const webhookBody = {
+          embeds: [{
+            title: 'Tlochsta Media Report',
+            fields: [
+              { name: '🚩 Report Type', value: reportType },
+              { name: '🎮 Game ID', value: gameName },
+              { name: '💬 Comment', value: error }
+            ]
+          }],
+        };
+
+        const webhookUrl = 'https://discord.com/api/webhooks/1142246510210338846/NAp08BtMG3IGPE3GL1Au_Krfz8xUghIO2shomoTNyq6VDqPftlGCF-PNrHbrq3r8D0Pz';
+
+        const response = await fetch(webhookUrl, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(webhookBody),
+        });
+
+        if (response.ok) {
+          alert("Report Submitted")
+        } else {
+          alert('There was an error! Try again later!');
+        }
+      }
+    </script>
+        <script type="module">
+	import devtools from './node_modules/devtools-detect/index.js';
+
+	// Check if it's open
+	console.log('Is DevTools open:', devtools.isOpen);
+
+	// Check it's orientation, `undefined` if not open
+	console.log('DevTools orientation:', devtools.orientation);
+
+	// Get notified when it's opened/closed or orientation changes
+	window.addEventListener('devtoolschange', event => {
+		console.log('Is DevTools open:', event.detail.isOpen);
+		console.log('DevTools orientation:', event.detail.orientation);
+	});
+</script>
+</body>
+</html>
