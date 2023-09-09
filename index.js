@@ -263,20 +263,7 @@ app.use(bans);
 
 // Create a rotating file stream for logging
 // Create a rotating file stream for logging
-const logDirectory = path.join(__dirname, 'logs');
 
-function generateLogFileName() {
-  return 'access-' + new Date().toISOString().slice(0, 10) + '.log';
-}
-
-const logStream = rfs.createStream(generateLogFileName, {
-  interval: '1d', // Rotate daily
-  path: logDirectory,
-});
-
-
-// Use Morgan middleware with the custom log stream
-app.use(morgan('combined', { stream: logStream }));
 app.use(limiter);
 
 // Serve static files (including the CSS and HTML)
