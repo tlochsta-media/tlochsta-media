@@ -9,6 +9,403 @@
 <meta name="theme-color" content="#ffffff">
     <title>tlochsta media</title>
     <script src="https://getbootstrap.com/docs/5.3/assets/js/color-modes.js"></script>
+    <script defer>
+      const link = document.createElement("link");
+link.rel = "stylesheet";
+link.type = "text/css";
+link.href =
+  "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css";
+
+document.head.appendChild(link);
+
+const link2 = document.createElement("link");
+link2.rel = "preconnect";
+link2.href = "https://fonts.googleapis.com";
+
+document.head.appendChild(link2);
+
+const link3 = document.createElement("link");
+link3.rel = "preconnect";
+link3.href = "https://fonts.gstatic.com";
+
+document.head.appendChild(link3);
+
+const link4 = document.createElement("link");
+link4.rel = "stylesheet";
+link4.href =
+  "https://fonts.googleapis.com/css2?family=Barlow:wght@800&family=Cabin:wght@500&family=Montserrat:wght@600&family=Noto+Sans&family=Poppins&family=Roboto:wght@500&family=Space+Grotesk:wght@700&family=Varela+Round&display=swap";
+
+document.head.appendChild(link4);
+
+const link5 = document.createElement("link"); link5.rel = "stylesheet", link5.type = "text/css", link5.href = "https://gitloaf.com/cdn/albibos/carbon-windows/main/window.min.css", document.head.appendChild(link5);
+
+class Carbon {
+  constructor(options) {
+    this.name = options.name;
+    this.id = options.id;
+    this.type = options.type;
+    this.url = options.url;
+    this.html = options.html;
+    this.width = options.width + "px";
+    this.height = options.height + "px";
+    this.parent = options.parent || null;
+    this.gameid = options.gameid || null;
+    this.server = options.server || "https://raw.githack.com/carbonsystems-dev/gamevault/main/"
+
+    this.createWindow();
+    this.addEventListeners();
+  }
+
+  createWindow() {
+    this.windowElement = document.createElement("div");
+    this.windowElement.className = "window";
+    this.windowElement.style.width = this.width;
+    this.windowElement.style.height = this.height;
+    this.windowElement.id = this.id;
+
+    const titleBar = document.createElement("div");
+    titleBar.className = "title-bar";
+
+    const title = document.createElement("div");
+    title.className = "title";
+    title.innerText = this.name;
+
+    const buttons = document.createElement("div");
+    buttons.className = "buttons";
+    buttons.innerHTML = `
+            <i class="fa-regular fa-window-minimize"></i>
+            <i class="fa-regular fa-window-maximize"></i>
+            <i class="fa-solid fa-xmark"></i>
+        `;
+
+    const content = document.createElement("div");
+    content.className = "content";
+
+    titleBar.appendChild(title);
+    titleBar.appendChild(buttons);
+    this.windowElement.appendChild(titleBar);
+    this.windowElement.appendChild(content);
+
+    if (this.parent) {
+      document.getElementById(this.parent).appendChild(this.windowElement);
+    } else {
+      document.body.appendChild(this.windowElement);
+      this.centerWindow();
+    }
+
+    if (this.type === "html") {
+      content.innerHTML = this.html;
+    } else if (this.type === "iframe") {
+      if (this.gameid) {
+        const iframe = document.createElement("iframe");
+        iframe.src = this.server + this.gameid + "/index.html";
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        content.appendChild(iframe);
+      } else {
+        const iframe = document.createElement("iframe");
+        iframe.src = this.url;
+        iframe.style.width = "100%";
+        iframe.style.height = "100%";
+        content.appendChild(iframe);
+      }
+    }
+  }
+
+  centerWindow() {
+    this.windowElement.style.position = "fixed";
+    this.windowElement.style.left = "50%";
+    this.windowElement.style.top = "50%";
+    this.windowElement.style.transform = "translate(-50%, -50%)";
+  }
+
+  addEventListeners() {
+    const titleBar = this.windowElement.querySelector(".title-bar");
+    const minimizeButton = this.windowElement.querySelector(
+      ".fa-window-minimize"
+    );
+    const maximizeButton = this.windowElement.querySelector(
+      ".fa-window-maximize"
+    );
+    const closeButton = this.windowElement.querySelector(".fa-xmark");
+    const content = this.windowElement.querySelector(".content");
+
+    let isMaximized = false;
+
+    titleBar.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.dragStart(e);
+      }
+    });
+
+    minimizeButton.addEventListener("click", () => {
+      this.hide();
+    });
+
+    maximizeButton.addEventListener("click", () => {
+      if (isMaximized) {
+        this.windowElement.style.width = this.width;
+        this.windowElement.style.height = this.height;
+        this.windowElement.classList.remove("fullscreen");
+        titleBar.style.cursor = "grab";
+        isMaximized = false;
+      } else {
+        const currentLeft = this.windowElement.style.left;
+        const currentTop = this.windowElement.style.top;
+
+        this.windowElement.style.width = "100%";
+        this.windowElement.style.height = "100%";
+        this.windowElement.classList.add("fullscreen");
+        titleBar.style.cursor = "auto";
+        isMaximized = true;
+
+        this.windowElement.style.left = "50%";
+        this.windowElement.style.top = "50%";
+        this.windowElement.style.transform = "translate(-50%, -50%)";
+        this.windowElement.dataset.originalLeft = currentLeft;
+        this.windowElement.dataset.originalTop = currentTop;
+      }
+    });
+
+    closeButton.addEventListener("click", () => {
+      this.windowElement.remove();
+    });
+
+    const resizeHandles = [
+      {
+        className: "resize-handle top",
+        cursor: "ns-resize",
+        direction: "top",
+        id: "resizeHandleTop",
+      },
+      {
+        className: "resize-handle bottom",
+        cursor: "ns-resize",
+        direction: "bottom",
+        id: "resizeHandleBottom",
+      },
+      {
+        className: "resize-handle left",
+        cursor: "ew-resize",
+        direction: "left",
+        id: "resizeHandleLeft",
+      },
+      {
+        className: "resize-handle right",
+        cursor: "ew-resize",
+        direction: "right",
+        id: "resizeHandleRight",
+      },
+      {
+        className: "resize-handle top-left",
+        cursor: "nwse-resize",
+        direction: "top-left",
+        id: "resizeHandleTopLeft",
+      },
+      {
+        className: "resize-handle top-right",
+        cursor: "nesw-resize",
+        direction: "top-right",
+        id: "resizeHandleTopRight",
+      },
+      {
+        className: "resize-handle bottom-left",
+        cursor: "nesw-resize",
+        direction: "bottom-left",
+        id: "resizeHandleBottomLeft",
+      },
+      {
+        className: "resize-handle bottom-right",
+        cursor: "nwse-resize",
+        direction: "bottom-right",
+        id: "resizeHandleBottomRight",
+      },
+    ];
+
+    resizeHandles.forEach((handle) => {
+      const resizeHandle = document.createElement("div");
+      resizeHandle.className = handle.className;
+      resizeHandle.style.cursor = handle.cursor;
+      resizeHandle.id = handle.id;
+      this.windowElement.appendChild(resizeHandle);
+
+      resizeHandle.addEventListener("mousedown", (e) => {
+        if (!isMaximized) {
+          this.resizeStart(e, handle.direction);
+        }
+      });
+    });
+
+    const resizeHandleBottom = document.getElementById("resizeHandleBottom");
+    const resizeHandleLeft = document.getElementById("resizeHandleLeft");
+    const resizeHandleRight = document.getElementById("resizeHandleRight");
+    const resizeHandleTop = document.getElementById("resizeHandleTop");
+    const resizeHandleTopLeft = document.getElementById("resizeHandleTopLeft");
+    const resizeHandleTopRight = document.getElementById("resizeHandleTopRight");
+    const resizeHandleBottomLeft = document.getElementById("resizeHandleBottomLeft");
+    const resizeHandleBottomRight = document.getElementById("resizeHandleBottomRight");
+
+    resizeHandleBottom.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "bottom");
+      }
+    });
+
+    resizeHandleLeft.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "left");
+      }
+    });
+
+    resizeHandleRight.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "right");
+      }
+    });
+
+    resizeHandleTop.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "top");
+      }
+    });
+
+    resizeHandleTopLeft.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "top-left");
+      }
+    });
+
+    resizeHandleTopRight.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "top-right");
+      }
+    });
+
+    resizeHandleBottomLeft.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "bottom-left");
+      }
+    });
+
+    resizeHandleBottomRight.addEventListener("mousedown", (e) => {
+      if (!isMaximized) {
+        this.resizeStart(e, "bottom-right");
+      }
+    });
+  }
+
+  show() {
+    this.windowElement.style.opacity = "1";
+    this.windowElement.style.pointerEvents = "auto";
+  }
+
+  hide() {
+    this.windowElement.style.opacity = "0";
+    this.windowElement.style.pointerEvents = "none";
+  }
+
+  fullscreen() {
+    const currentLeft = this.windowElement.style.left;
+    const currentTop = this.windowElement.style.top;
+
+    this.windowElement.style.width = "100%";
+    this.windowElement.style.height = "100%";
+    this.windowElement.classList.add("fullscreen");
+    titleBar.style.cursor = "auto";
+    isMaximized = true;
+
+    this.windowElement.style.left = "50%";
+    this.windowElement.style.top = "50%";
+    this.windowElement.style.transform = "translate(-50%, -50%)";
+    this.windowElement.dataset.originalLeft = currentLeft;
+    this.windowElement.dataset.originalTop = currentTop;
+  }
+
+  unfullscreen() {
+    this.windowElement.style.width = this.width;
+    this.windowElement.style.height = this.height;
+    this.windowElement.classList.remove("fullscreen");
+    titleBar.style.cursor = "grab";
+    isMaximized = false;
+  }
+
+  dragStart(e) {
+    const startX = e.clientX;
+    const startY = e.clientY;
+
+    const windowX = this.windowElement.offsetLeft;
+    const windowY = this.windowElement.offsetTop;
+
+    const onDrag = (e) => {
+      const offsetX = e.clientX - startX;
+      const offsetY = e.clientY - startY;
+
+      this.windowElement.style.left = windowX + offsetX + "px";
+
+      if (offsetY > 0) {
+        this.windowElement.style.top = windowY + offsetY + "px";
+      } else {
+        this.windowElement.style.top = windowY + offsetY + "px";
+      }
+    };
+
+    const onDragEnd = () => {
+      window.removeEventListener("mousemove", onDrag);
+      window.removeEventListener("mouseup", onDragEnd);
+      this.windowElement.style.cursor = "grab";
+    };
+
+    window.addEventListener("mousemove", onDrag);
+    window.addEventListener("mouseup", onDragEnd);
+    this.windowElement.style.cursor = "grabbing";
+  }
+
+  resizeStart(e, direction) {
+    const startX = e.clientX;
+    const startY = e.clientY;
+
+    const windowWidth = this.windowElement.offsetWidth;
+    const windowHeight = this.windowElement.offsetHeight;
+
+    const onResize = (e) => {
+      const offsetX = e.clientX - startX;
+      const offsetY = e.clientY - startY;
+
+      let newWidth = windowWidth;
+      let newHeight = windowHeight;
+
+      if (direction.includes("right")) {
+        newWidth = windowWidth + offsetX;
+      } else if (direction.includes("left")) {
+        newWidth = windowWidth - offsetX;
+      }
+
+      if (direction.includes("bottom")) {
+        newHeight = windowHeight + offsetY;
+      } else if (direction.includes("top")) {
+        newHeight = windowHeight - offsetY;
+      }
+
+      newWidth = Math.max(newWidth, 100);
+      newHeight = Math.max(newHeight, 100);
+
+      this.windowElement.style.width = newWidth + "px";
+      this.windowElement.style.height = newHeight + "px";
+    };
+
+
+
+
+    const onResizeEnd = () => {
+      window.removeEventListener("mousemove", onResize);
+      window.removeEventListener("mouseup", onResizeEnd);
+    };
+
+    window.addEventListener("mousemove", onResize);
+    window.addEventListener("mouseup", onResizeEnd);
+  }
+}
+    </script>
       <style>
         * {
   box-sizing: border-box;
@@ -29,7 +426,6 @@ body {
   overflow: hidden;
   opacity: 0;
   transition: opacity 0.3s ease;
-  z-index: 1000;
 }
 
 .window.visible {
@@ -453,41 +849,39 @@ $(document).ready(function(){
 </script>
 </div>
    <div class="row">
-  <div class="col-md-6">
-    <h1>Game List</h1>
-    <!-- Your first list here -->
-    <div class="input-group mb-3">
-  <input type="text" class="form-control" id="search-input" placeholder="Search Games" aria-label="Recipient's username" aria-describedby="search-btn">
-  <button class="input-group-text btn btn-primary" id="search-btn">Search</button>
-      <script>
-        const input = document.getElementById("search-input");
-        const button = document.getElementById("search-btn");
-        button.addEventListener("click", function() {
-  window.location = "https://" + window.location.hostname + "/search/" + input.value;
-});
-      </script>
-</div>
-    <ul class="list-group" id="directoryList">
-      <!-- The list will be dynamically populated here using JavaScript -->
+    <h1>Search Results</h1>
+    <ul class="list-group">
+        <% if (results.length === 0) { %>
+            <!-- Display a message if no results were found -->
+            <li class="list-group-item">No results found. <a href="/games" class="btn btn-primary">Go Back</a></li>
+        <% } else { %>
+            <% results.forEach(gameTitle => { %>
+                <li class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;" onclick="openGameLink('<%= gameTitle %>');">
+                    <div class="mr-auto"><%= gameTitle %></div>
+                    <div class="d-flex align-items-center">
+                        <i class="far fa-clipboard"></i>&nbsp;&nbsp;
+                        <i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;
+                        <i onclick="openGameLink('<%= gameTitle %>');" class="fas fa-play ml-2"></i>
+                    </div>
+                </li>
+            <% }); %>
+        <% } %>
     </ul>
   </div>
-  <div class="col-md-6">
-    <h1>Custom Games</h1>
-    <!-- Your second list here -->
-    <ul class="list-group" id="customGames">
-      <li onclick="openCustomGame('https://5f90879a-4bb3-4094-8260-5ab0cd79560f.id.repl.co')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">The Final Earth 2</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-            <li onclick="openCustomGame('https://scratch.mit.edu/projects/877754742/embed')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">Drifting Sim 6</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-                  <li onclick="openCustomGame('https://scratch.mit.edu/projects/389464290/embed')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">Getting Over It v1.4</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-                        <li onclick="openCustomGame('https://client.tlochsta.dev')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">Eaglercraft 1.5</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-                        <li onclick="openCustomGame('https://06e75977-a7aa-441b-99d1-4ad4ad695a22.id.repl.co/game')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">Darkfire Depths</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-                              <li onclick="openCustomGame('https://451a3857-de21-408f-a190-8c01feea6fb9.id.repl.co')" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto">City Rider</div><div class="d-flex align-items-center"><i class="far fa-clipboard"></i>&nbsp;&nbsp;<i class="fas fa-share-from-square ml-2" style="cursor: pointer;"></i>&nbsp;<i class="fas fa-play ml-2"></i></div></li>
-            <li onclick="window.location = 'https://' + window.location.hostname + '/developers'" class="list-group-item d-flex justify-content-between align-items-center" style="cursor: pointer;"><div class="mr-auto"><i class="fa-solid fa-arrow-up-from-bracket"></i> Upload Your Own Game</div></li>
-      <!-- Additional items for the second list -->
-    </ul>
-  </div>
-</div>
     <script>
+  function openGameLink(directoryName) {
+    const directoryUrl = "https://cdn.tlochsta.dev/cdn/3kh0/3kh0-Assets/main/" + directoryName + "/index.html"
+    const showWindow = new Carbon({
+      name: "Playing " + directoryName,
+      id: "newGame",
+      type: "iframe",
+      url: directoryUrl,
+      width: "600",
+      height: "400",
+            });
 
+          showWindow.show();
+  }
       function gotogame() {
         window.location.href = "https://"+ window.location.hostname + "/game/" + document.getElementById("gameid").value + "/index"
       }
@@ -954,7 +1348,6 @@ $(document).ready(function(){
       const listItem = document.createElement("li");
       listItem.classList.add("list-group-item", "d-flex", "justify-content-between", "align-items-center");
       listItem.style.cursor = "pointer";
-      listItem.setAttribute("id", directoryName);
 
       const nameContainer = document.createElement("div");
       nameContainer.textContent = directoryName;
@@ -1022,31 +1415,7 @@ $(document).ready(function(){
     directoryList.appendChild(listItem);
   });
 
-  function openGameLink(directoryName) {
-    const directoryUrl = "https://cdn.tlochsta.dev/cdn/3kh0/3kh0-Assets/main/" + directoryName + "/index.html"
-    const showWindow = new Carbon({
-      name: "Playing " + directoryName,
-      id: "newGame",
-      type: "iframe",
-      url: directoryUrl,
-      width: "600",
-      height: "400",
-            });
 
-          showWindow.show();
-  }
-          function openCustomGame(gameurl) {
-    const showWindow = new Carbon({
-      name: gameurl,
-      id: "newGame",
-      type: "iframe",
-      url: gameurl,
-      width: "600",
-      height: "400",
-            });
-
-          showWindow.show();
-  }
         const link = document.createElement("link");
 link.rel = "stylesheet";
 link.type = "text/css";

@@ -272,7 +272,9 @@ app.use('/scripts/devtools-detect', express.static(__dirname + '/node_modules/de
 // Set EJS as the view engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'public'));
-
+app.get('/test123', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public/test.html'));
+});
 // Game page route
 app.get('/game/:gameDirectory/:fl', (req, res) => {
   var game = "https://cdn.tlochsta.dev/cdn/3kh0/3kh0-Assets/main/" + req.params.gameDirectory + "/" + req.params.fl + ".html";
@@ -294,6 +296,9 @@ app.get('/game/:gameDirectory/:fl', (req, res) => {
   } else {
     res.sendFile(path.join(__dirname, 'public/auth.html'));
   }
+});
+app.get('/discord', (req, res) => {
+  res.redirect("https://discord.gg/9DYMSyzZF6")
 });
 app.get('/repl/:game', (req, res) => {
   var game = "https://" + req.params.game + ".id.repl.co"
@@ -380,7 +385,32 @@ app.get('/repl/:game', (req, res) => {
   }
 });
 
+const data = require('./data.json');
 
+// Define a route for the search page
+app.get('/search/:query', (req, res) => {
+     if (req.get('X-Replit-User-Id')) {
+    var admin = false;
+    if (req.get('X-Replit-User-Name') == 'tlochsta' || req.get('X-Replit-User-Name') == 'tlochsta2' || req.get('X-Replit-User-Name') == 'JacksonEllingse' || req.get('X-Replit-User-Name') == 'JacksonEllingse') {
+      admin = true;
+    }
+  const query = req.params.query.toLowerCase();
+
+  // Filter data based on the query
+  const results = data.filter(gameTitle =>
+    gameTitle.toLowerCase().includes(query)
+  );
+    res.render('results', {
+      name: req.get('X-Replit-User-Name'),
+      name1: req.get('X-Replit-User-Name').charAt(0).toUpperCase(),
+      isAdmin: admin,
+      results: results
+    });
+  } else {
+    res.sendFile(path.join(__dirname, 'public/auth.html'));
+  }
+  
+});
 // Homepage route
 app.get('/', (req, res) => {
    if (req.get('X-Replit-User-Id')) {
